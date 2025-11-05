@@ -36,12 +36,20 @@ const Ingredients: FC<IngredientsProps> = (props) => {
   return (
     <div
       className={cn(
-        "bg-gray-50 p-5 rounded-md h-[420px] overflow-auto scrollbar",
+        "bg-gray-50 rounded-md overflow-auto scrollbar",
+        "p-3 xs:p-4 sm:p-5",
+        "h-[300px] xs:h-[350px] sm:h-[400px] md:h-[420px]",
         className,
       )}
     >
       <div
-        className="grid grid-cols-3 gap-3"
+        className={cn(
+          "grid gap-2 xs:gap-3 sm:gap-3",
+          "grid-cols-2",
+          "xs:grid-cols-2",
+          "sm:grid-cols-3",
+          "md:grid-cols-3"
+        )}
       >
         {
           ingredients.map((ing, index) => {
@@ -52,25 +60,42 @@ const Ingredients: FC<IngredientsProps> = (props) => {
                 onClick={handlerIngredientClick.bind(null, ing)}
                 className={
                   cn(
-                    "flex items-center flex-col p-1 rounded-md w-32 text-center relative cursor-pointer shadow-md bg-white border",
+                    "flex items-center flex-col p-1 rounded-md text-center relative cursor-pointer shadow-md bg-white border",
+                    "w-full min-w-0",
+                    "p-1 xs:p-2",
                     { "border-primary": active }
                   )
                 }
               >
-                {active && <CircleCheck className="absolute top-2 right-2 text-primary" />}
+                {active && <CircleCheck className={`
+                  absolute text-primary
+                  top-1 right-1 xs:top-2 xs:right-2
+                  w-3 h-3 xs:w-4 xs:h-4
+                `} />}
                 <img
                   src={ing.imageUrl}
                   alt={ing.name}
-                  width={100}
-                  height={100}
+                  className={`
+                    w-12 h-12 xs:w-16 xs:h-16 sm:w-20 sm:h-20 md:w-24 md:h-24
+                    object-contain
+                  `}
                 />
                 <span
-                  className="text-xs mt-2"
+                  className={`
+                    mt-1 xs:mt-2
+                    text-xs xs:text-sm
+                    line-clamp-2
+                    px-1
+                  `}
                 >
                   {ing.name}
                 </span>
                 <span
-                  className="font-bold"
+                  className={`
+                    font-bold
+                    text-xs xs:text-sm
+                    mt-1
+                  `}
                 >
                   {ing.price} $
                 </span>
@@ -80,7 +105,6 @@ const Ingredients: FC<IngredientsProps> = (props) => {
         }
       </div>
     </div>
-
   )
 }
 

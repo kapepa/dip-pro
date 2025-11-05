@@ -55,12 +55,12 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
                     size="sm"
                     className="text-center font-bold my-2"
                   >
-                    Your cart is empty
+                    Ваш кошик порожній
                   </Title>
                   <p
                     className="text-center text-neutral-500 mb-5"
                   >
-                    Add any products
+                    Додайте будь-які продукти
                   </p>
 
                   <SheetClose
@@ -73,7 +73,7 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
                       <ArrowLeft
                         className="w-5 mr-2"
                       />
-                      Come back
+                      Повертайся
                     </Button>
                   </SheetClose>
                 </div>
@@ -84,7 +84,7 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
             <>
               <SheetHeader>
                 <SheetTitle>
-                  There are <span className="font-bold">{cartItems.length} three items</span> in your cart.
+                  У вашому кошику <span className="font-bold">{cartItems.length}</span> товари.
                 </SheetTitle>
               </SheetHeader>
 
@@ -119,7 +119,7 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
                 <div className="w-full">
                   <div className="flex mb-4">
                     <span className="flex flex-1 text-lg text-neutral-500">
-                      Total
+                      Всього
                       <div className="flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2" />
                     </span>
 
@@ -136,7 +136,7 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
                       loading={redirecting}
                       type="submit"
                       className="w-full h-12 text-base">
-                      Place an order
+                      Оформити замовлення
                       <ArrowRight className="w-5 ml-2" />
                     </Button>
                   </Link>

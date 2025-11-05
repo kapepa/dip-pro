@@ -5,7 +5,7 @@ import { CategoriesTypes } from "@/components/shared/types/categories-type";
 const DEFAULT_MIN_PRICE = 0;
 const DEFAULT_MAX_PRICE = 1000;
 
-const findPizza = async (props: GetSearchParamProps): Promise<CategoriesTypes[]> => {
+const findPizza = async (props: GetSearchParamProps): Promise<{ categories: CategoriesTypes[], max: number }> => {
   const sizes = props.sizes?.split(",").map(Number);
   const pizzaType = props.pizzaTypes?.split(",").map(Number);
   const ingredientsIds = props.ingredients?.split(",");
@@ -42,6 +42,10 @@ const findPizza = async (props: GetSearchParamProps): Promise<CategoriesTypes[]>
               pizzaType: {
                 in: pizzaType
               },
+              price: {
+                gte: minPrice,
+                lte: maxPrice,
+              },
             }
           }
         },
@@ -49,7 +53,13 @@ const findPizza = async (props: GetSearchParamProps): Promise<CategoriesTypes[]>
     }
   }).then(cat => cat.filter(c => c.products.length > 0))
 
-  return categories
+  const maxPriceItem = await prisma.productItem.aggregate({
+    _max: {
+      price: true
+    }
+  });
+
+  return { categories, max: maxPriceItem._max.price ?? 0 }
 }
 
 export { findPizza }

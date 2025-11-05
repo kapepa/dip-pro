@@ -24,7 +24,7 @@ const FilterCheckbox: FC<FilterCheckboxProps> = (props) => {
       />
       <label
         htmlFor={`checkbox-${text}`}
-        className="leading-none cursor-pointer flex-1 whitespace-nowrap"
+        className="leading-none cursor-pointer whitespace-nowrap"
       >
         {text}
       </label>

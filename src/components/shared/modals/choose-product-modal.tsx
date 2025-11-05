@@ -21,11 +21,7 @@ const ChooseProductModal: FC<ChooseProductModalProps> = (props) => {
     >
       <DialogTitle />
       <DialogContent
-        className='p-0 min-h-[500px] bg-white overflow-hidden'
-        style={{
-          width: '1060px',
-          maxWidth: '1060px',
-        }}
+        className="p-0 min-h-[500px] bg-white overflow-hidden w-full max-w-[350px] md:max-w-[640px] lg:max-w-[768px] xl:max-w-[1024px]"
       >
         <ChooseBase
           product={product}

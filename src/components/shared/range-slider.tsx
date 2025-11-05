@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as SliderPrimitive from '@radix-ui/react-slider';
 import { cn } from '@/lib/utils';
+
 
 type SliderProps = {
   className?: string;
@@ -22,10 +23,9 @@ const RangeSlider = React.forwardRef(
     const initialValue = Array.isArray(value) ? value : [min, max];
     const [localValues, setLocalValues] = React.useState(initialValue);
 
-    React.useEffect(() => {
-      // Update localValues when the external value prop changes
+    useEffect(() => {
       setLocalValues(Array.isArray(value) ? value : [min, max]);
-    }, [min, max, value]);
+    }, []);
 
     const handleValueChange = (newValues: number[]) => {
       setLocalValues(newValues);
@@ -52,7 +52,8 @@ const RangeSlider = React.forwardRef(
             <div
               className="absolute text-center"
               style={{
-                left: `calc(${((value - min) / (max - min)) * 100}% + 0px)`,
+                left: index === 0 ? `0` : "",
+                right: index === 1 ? `0` : "",
                 top: `10px`,
               }}>
               <span className="text-sm">{formatLabel ? formatLabel(value) : value}</span>
