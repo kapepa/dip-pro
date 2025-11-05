@@ -134,6 +134,20 @@ html {
   background: #dbdadd;
 }
 
+#nprogress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1600;
+}
+
+#nprogress .bar {
+  position: fixed;
+  top: 0;
+  z-index: 1600;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

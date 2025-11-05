@@ -36,18 +36,30 @@ const FormInput: FC<FormInputProps> = (props) => {
   return (
     <div className={className}>
       {label && (
-        <p className="font-medium mb-2">
+        <p className={`
+          font-medium mb-2
+          text-sm xs:text-base
+        `}>
           {label} {required && <RequiredSymbol />}
         </p>
       )}
       <div className="relative">
         <Input
-          className="h-12 text-base"
+          className={`
+            h-10 xs:h-11 sm:h-12
+            text-sm xs:text-base
+          `}
           {...register(name)}
           {...otherProps}
         />
         {fieldValue && (
-          <ClearButton onClick={handleClear} />
+          <ClearButton
+            onClick={handleClear}
+            className={`
+              w-4 h-4 xs:w-5 xs:h-5
+              right-2 xs:right-3
+            `}
+          />
         )}
       </div>
 
@@ -57,7 +69,10 @@ const FormInput: FC<FormInputProps> = (props) => {
         render={({ message }) => (
           <ErrorText
             text={message}
-            className="mt-2"
+            className={`
+              mt-1 xs:mt-2
+              text-xs xs:text-sm
+            `}
           />
         )}
       />

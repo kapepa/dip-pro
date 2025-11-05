@@ -22,19 +22,19 @@ const CheckoutPersonalForm: FC<CheckoutPersonalFormProps> = (props) => {
           name="fullName"
           type="text"
           className="text-base"
-          placeholder="Name"
+          placeholder="Ім'я"
         />
         <FormInput
           name="email"
           type="email"
           className="text-base"
-          placeholder="Email"
+          placeholder="E-mail"
         />
         <FormPhone
           name="phone"
           type="text"
           className="text-base"
-          placeholder="Phone"
+          placeholder="Телефон"
         />
       </div>
     </WhiteBlock>

@@ -6,17 +6,19 @@ import { Title } from "./title";
 import { Input } from "../ui/input";
 import { RangeSlider } from "./range-slider";
 import { CheckboxFiltersGroup } from "./checkbox-filters-group";
-import { useIngredients } from "./hooks/use-ingredients";
 import { useFilters } from "./hooks/use-filters";
 import { useQueryFilters } from "./hooks/use-query-filters";
+import { Ingredient } from "@prisma/client";
 
 interface FiltersProps {
-  className?: string
+  max: number,
+  loading: boolean,
+  className?: string,
+  ingredients: Ingredient[],
 }
 
 const Filters: FC<FiltersProps> = (props) => {
-  const { className } = props;
-  const { ingredients, loading } = useIngredients();
+  const { max, loading, className, ingredients } = props;
   const filters = useFilters();
 
   useQueryFilters(filters);
@@ -34,84 +36,96 @@ const Filters: FC<FiltersProps> = (props) => {
     >
       <Title
         size="sm"
-        className="mb-5 font-bold"
+        className={cn(
+          "font-bold mb-4 xs:mb-5",
+          "text-lg xs:text-xl sm:text-2xl"
+        )}
       >
-        Filters
+        Фільтр
       </Title>
 
       <div
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-3 xs:gap-4 sm:gap-5"
       >
         <CheckboxFiltersGroup
           title="Тип теста"
           name="pizzaTypes"
-          className="mb-5"
+          className="mb-4 xs:mb-5"
           onChange={filters.setPizzaTypes}
           selected={filters.pizzaTypes}
           loading={loading}
           items={[
-            { text: 'Thin', value: '1' },
-            { text: 'Traditional', value: '2' },
+            { text: 'Тонкий', value: '1' },
+            { text: 'Традиційний', value: '2' },
           ]}
         />
         <CheckboxFiltersGroup
-          title="Size"
+          title="Розмір"
           name="sizes"
-          className="mb-5"
+          className="mb-4 xs:mb-5"
           onChange={filters.setSizes}
           selected={filters.sizes}
           loading={loading}
           items={[
-            { text: '20 cm', value: '20' },
-            { text: '30 cm', value: '30' },
-            { text: '40 cm', value: '40' },
+            { text: '20 см', value: '20' },
+            { text: '30 см', value: '30' },
+            { text: '40 см', value: '40' },
           ]}
         />
       </div>
 
       <div
-        className="mt-5 border-y border-y-neutral-100 py-6 pb-7"
+        className={cn(
+          "mt-4 xs:mt-5 border-y border-y-neutral-100",
+          "py-4 xs:py-5 sm:py-6 pb-5 xs:pb-6 sm:pb-7"
+        )}
       >
         <p
-          className="font-bold mb-3"
+          className={cn(
+            "font-bold mb-3 xs:mb-4",
+            "text-base xs:text-lg"
+          )}
         >
-          Price from and to:
+          Ціна від і до:
         </p>
         <div
-          className="flex gap-3 mb-5 w-full"
+          className={cn(
+            "flex flex-wrap gap-2 xs:gap-3 mb-4 xs:mb-5 w-full",
+          )}
         >
           <Input
             type="number"
             placeholder="0"
             min={0}
             max={1000}
-            // defaultValue={0}
             value={String(filters.prices.priceFrom)}
             onChange={(e) => filters.setPrices('priceFrom', Number(e.target.value))}
+            className="grow basis-20"
           />
           <Input
             type="number"
-            placeholder="1000"
+            placeholder={String(max)}
             min={100}
             max={1000}
             value={String(filters.prices.priceTo)}
             onChange={(e) => filters.setPrices('priceTo', Number(e.target.value))}
+            className="grow basis-20"
           />
         </div>
 
         <RangeSlider
           min={0}
-          max={5000}
+          max={max}
           step={10}
-          value={[0, 5000]}
+          value={[0, max]}
           onValueChange={updatePrices}
         />
       </div>
 
       <CheckboxFiltersGroup
-        title="Ingredients"
+        title="Інгредієнти"
         name="ingredients"
-        className="mt-5"
+        className="mt-4 xs:mt-5"
         limit={6}
         defaultItems={items.slice(0, 6)}
         items={items}

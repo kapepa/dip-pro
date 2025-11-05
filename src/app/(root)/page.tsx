@@ -1,5 +1,5 @@
 import { Container } from "@/components/shared/container";
-import { Filters } from "@/components/shared/filters";
+import { FilterBar } from "@/components/shared/filter-bar";
 import { GetSearchParamProps } from "@/components/shared/interfaces/get-search-param";
 import { ProductsGroupList } from "@/components/shared/products-group-list";
 import { Title } from "@/components/shared/title";
@@ -12,8 +12,8 @@ interface HomeProps {
 }
 
 export default async function Home(props: HomeProps) {
-  const params = await props.searchParams
-  const categories = await findPizza(params)
+  const params = await props.searchParams;
+  const { max, categories } = await findPizza(params);
 
   return (
     <>
@@ -22,9 +22,9 @@ export default async function Home(props: HomeProps) {
       >
         <Title
           size="lg"
-          className="font-extrabold"
+          className="font-extrabold text-center lg:text-left"
         >
-          All pizzas
+          Наше меню
         </Title>
       </Container>
       <TopBar
@@ -34,13 +34,15 @@ export default async function Home(props: HomeProps) {
         className="pb-14 mt-10"
       >
         <div
-          className="flex gap-24"
+          className="flex gap-10 lg:gap-24"
         >
           <div
-            className="min-w-3xs"
+            className="md:min-w-1/6 hidden md:block"
           >
             <Suspense>
-              <Filters />
+              <FilterBar
+                max={max}
+              />
             </Suspense>
           </div>
 
@@ -54,6 +56,7 @@ export default async function Home(props: HomeProps) {
                 categories.map((category) => (
                   category.products.length > 0 && (
                     <ProductsGroupList
+                      id={category.id}
                       key={category.id}
                       title={category.name}
                       products={category.products}

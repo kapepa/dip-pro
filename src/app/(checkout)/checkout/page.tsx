@@ -14,13 +14,17 @@ import { CheckoutFormType, CheckoutSchema } from "@/components/shared/checkout/s
 import { cn } from "@/lib/utils";
 import { createOrder } from "@/app/actions";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { myself } from "@/components/shared/services/auth";
+import { da } from "zod/v4/locales";
 
 const CheckoutPage: NextPage = () => {
   const router = useRouter();
   const { loading, cartItems, totalAmount, deleteCartItem, handlerCountButton } = useCart();
   const [submiting, setSubmiting] = useState<boolean>(false);
+  const { data: session } = useSession();
   const methods = useForm<CheckoutFormType>({
     resolver: zodResolver(CheckoutSchema),
     defaultValues: {
@@ -45,6 +49,17 @@ const CheckoutPage: NextPage = () => {
       setSubmiting(false)
     }
   }
+
+  useEffect(() => {
+    if (session?.user && session?.user.fullName) {
+      myself()
+        .then(data => {
+          methods.setValue("email", data!.email);
+          methods.setValue("phone", data!.phone);
+          methods.setValue("fullName", data!.fullName);
+        })
+    }
+  }, [session])
 
   return (
     <Container

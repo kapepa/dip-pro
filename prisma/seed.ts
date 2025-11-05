@@ -60,7 +60,7 @@ async function createSeed() {
   const [pizza1, pizza2, pizza3] = await Promise.all([
     prisma.product.create({
       data: {
-        name: 'Cheese Pizza',
+        name: 'Сирна піца',
         imageUrl: '/pizzas/11EE7D61304FAF5A98A6958F2BB2D260.webp',
         categoryId: Pizzas.id,
         ingredients: {
@@ -70,7 +70,7 @@ async function createSeed() {
     }),
     prisma.product.create({
       data: {
-        name: 'Street Pizza',
+        name: 'Вулична піца',
         imageUrl: '/pizzas/11EE7D610CF7E265B7C72BE5AE757CA7.webp',
         categoryId: Pizzas.id,
         ingredients: {
@@ -82,9 +82,9 @@ async function createSeed() {
     }),
     prisma.product.create({
       data: {
-        name: 'Chorizo Fresh',
+        name: 'Чорізо Фреш',
         imageUrl: '/pizzas/11EE7D61706D472F9A5D71EB94149304.webp',
-        categoryId: Pizzas.id, // Use the actual category object's ID instead of hardcoded 1
+        categoryId: Pizzas.id,
         ingredients: {
           connect: ingredients.slice(10, 15).map(ingredient => ({
             id: ingredient.id

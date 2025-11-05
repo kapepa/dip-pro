@@ -1,12 +1,11 @@
 "use client"
 
-import { useRouter } from "next/navigation";
 import { FC, useMemo } from "react";
-import { useCartStore } from "./store/cart";
 import { ChoosePizzaForm } from "./choose-pizza-form";
 import { ChooseProductForm } from "./choose-product-form";
-import { toast } from "sonner";
 import { ProductType } from "./types/product-type";
+import { useCart } from "./hooks/use-cart";
+import { useRouter } from "next/navigation";
 
 interface ChooseBaseProps {
   product: ProductType,
@@ -17,21 +16,11 @@ const ChooseBase: FC<ChooseBaseProps> = (props) => {
   const router = useRouter();
   const productItem = product.productItem[0];
   const isPizzaForm = !!productItem.pizzaType;
-  const { loading, addCartItem } = useCartStore();
+  const { loading, addItemToCart } = useCart();
 
   const onSubmit = async (id: string, ingredientsId: string[] = []) => {
-    try {
-      await addCartItem({
-        productItemId: id,
-        ingredients: ingredientsId.length ? ingredientsId : [],
-      })
-
-      router.back();
-      toast.success(`The ${product.name} has been successfully added to your cart.`);
-    } catch (err) {
-      console.error(err)
-      toast.error("An error occurred while adding to the cart")
-    }
+    await addItemToCart(id, ingredientsId, product.name)
+    router.back();
   }
 
   const handlerProduct = useMemo(() => {
