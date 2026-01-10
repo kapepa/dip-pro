@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Product } from "@prisma/client";
 import { Search } from "lucide-react";
 import Link from "next/link";
-import { FC, useCallback, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useClickAway, useDebounce } from "react-use";
 import { productsSearch } from "./services/products";
 
@@ -15,13 +15,47 @@ interface SearchInputProps {
 const SearchInput: FC<SearchInputProps> = (props) => {
   const { className } = props;
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [focused, setFocused] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
-  const ref = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useClickAway(ref, () => {
     setFocused(false);
   });
+
+  // Дебаунсим поисковый запрос
+  useDebounce(
+    () => {
+      setDebouncedSearchQuery(searchQuery);
+    },
+    250,
+    [searchQuery]
+  );
+
+  // Выполняем поиск при изменении дебаунснутого запроса
+  useEffect(() => {
+    const searchProducts = async () => {
+      if (!debouncedSearchQuery.trim()) {
+        setProducts([]);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const response = await productsSearch(debouncedSearchQuery);
+        setProducts(response);
+      } catch (error) {
+        console.error('Search error:', error);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    searchProducts();
+  }, [debouncedSearchQuery]);
 
   const onClickItem = () => {
     setFocused(false);
@@ -29,20 +63,9 @@ const SearchInput: FC<SearchInputProps> = (props) => {
     setProducts([]);
   };
 
-  const handlerSearch = useCallback(() => {
-    useDebounce(
-      async () => {
-        try {
-          const response = await productsSearch(searchQuery);
-          setProducts(response);
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      250,
-      [searchQuery],
-    );
-  }, [searchQuery])
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <>
@@ -71,11 +94,14 @@ const SearchInput: FC<SearchInputProps> = (props) => {
           placeholder="Знайти піцу..."
           onFocus={() => setFocused(true)}
           value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            handlerSearch()
-          }}
+          onChange={handleInputChange}
         />
+
+        {isLoading && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+          </div>
+        )}
 
         {Boolean(products.length) && (
           <div

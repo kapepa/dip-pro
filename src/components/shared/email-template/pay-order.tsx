@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { Currency } from "../currency";
 
 interface PayOrderProps {
   id: string,

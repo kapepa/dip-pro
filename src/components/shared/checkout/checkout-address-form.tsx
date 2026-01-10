@@ -12,23 +12,30 @@ const CheckoutAddressForm: FC<CheckoutAddressFormProps> = (props) => {
 
   return (
     <WhiteBlock
-      title="3. Delivery address"
+      title="3. Адреса доставки"
       className={className}
     >
       <div
-        className="flex flex-col gap-5"
+        className="
+          flex flex-col
+          gap-4
+
+          sm:gap-5
+          md:gap-6
+        "
       >
         <FromStreet
           name="address"
           type="text"
           className="text-base"
-          placeholder="Address"
+          placeholder="Адреса"
         />
+
         <FormTextarea
-          rows={5}
+          rows={4}
           name="comment"
-          className="text-base"
-          placeholder="Comments on orders"
+          className="text-base resize-none"
+          placeholder="Коментарі до замовлень"
         />
       </div>
     </WhiteBlock>

@@ -8,8 +8,6 @@ import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { Ingredient } from "@prisma/client";
 import { Currency } from "./currency";
-import { UseCartReturn } from "./hooks/use-cart";
-
 
 interface ProductCardProps {
   id: string,

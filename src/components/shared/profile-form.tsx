@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@prisma/client";
 import { FC } from "react";
-import { formProfileSchema, FormProfileValues, FormRegisterValues } from "./modals/auth/forms/schemas";
+import { formProfileSchema, FormProfileValues } from "./modals/auth/forms/schemas";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";

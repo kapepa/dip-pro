@@ -24,28 +24,38 @@ export const CheckoutItem: React.FC<Props> = ({
   onClickCountButton,
   onClickRemove,
 }) => {
-
-
   return (
     <div
       className={cn(
-        'flex items-center justify-between',
-        {
-          'opacity-50 pointer-events-none': disabled,
-        },
-        className,
-      )}>
-      <div className="flex items-center gap-5 flex-1">
+        `
+        flex flex-col gap-4
+        md:flex-row md:items-center md:justify-between
+        `,
+        disabled && 'opacity-50 pointer-events-none',
+        className
+      )}
+    >
+      <div className="flex items-center gap-4 flex-1">
         <CartItemDetails.Image src={imageUrl} />
         <CartItemDetails.Info name={name} details={details} />
       </div>
 
-      <CartItemDetails.Price value={price} />
+      <div className="text-left md:text-center md:w-[80px]">
+        <CartItemDetails.Price value={price} />
+      </div>
 
-      <div className="flex items-center gap-5 ml-20">
-        <CartItemDetails.CountButton onClick={onClickCountButton} value={quantity} />
-        <button type="button" onClick={onClickRemove}>
-          <X className="text-gray-400 cursor-pointer hover:text-gray-600" size={20} />
+      <div className="flex items-center gap-4 md:gap-5 md:justify-end">
+        <CartItemDetails.CountButton
+          onClick={onClickCountButton}
+          value={quantity}
+        />
+
+        <button
+          type="button"
+          onClick={onClickRemove}
+          className="text-gray-400 hover:text-gray-600 transition"
+        >
+          <X size={20} />
         </button>
       </div>
     </div>
@@ -53,12 +63,19 @@ export const CheckoutItem: React.FC<Props> = ({
 };
 
 export const CheckoutItemSkeleton = () => (
-  <div className='flex items-center justify-between'>
-    <div className="flex items-center gap-5">
+  <div
+    className="
+      flex flex-col gap-4
+      sm:flex-row sm:items-center sm:justify-between
+    "
+  >
+    <div className="flex items-center gap-4">
       <Skeleton className="w-[50px] h-[50px]" />
-      <Skeleton className="w-40 h-5 " />
+      <Skeleton className="w-40 h-5" />
     </div>
-    <Skeleton className="h-5 w-10 " />
-    <Skeleton className="h-8 w-[133px]" />
+
+    <Skeleton className="h-5 w-12" />
+
+    <Skeleton className="h-8 w-full sm:w-[130px]" />
   </div>
-)
+);

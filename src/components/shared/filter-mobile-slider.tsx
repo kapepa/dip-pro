@@ -7,11 +7,12 @@ import { FilterBar } from "./filter-bar";
 import { XClose } from "./x-close";
 
 interface FilterMobileSliderProps {
+  max: number,
   className?: string
 }
 
 const FilterMobileSlider: FC<FilterMobileSliderProps> = (props) => {
-  const { className } = props;
+  const { max, className } = props;
   const [open, setOpen] = useState<boolean>(false);
 
   const handlerFilterMobile = () => {
@@ -49,6 +50,7 @@ const FilterMobileSlider: FC<FilterMobileSliderProps> = (props) => {
         )}
       >
         <FilterBar
+          max={max}
           className="w-full"
         />
         <XClose

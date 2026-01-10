@@ -24,62 +24,66 @@ const CheckoutSidebar: FC<CheckoutSidebarProps> = (props) => {
 
   return (
     <WhiteBlock
-      className={cn("p-6 sticky top-4", className)}
+      className={cn(
+        `
+        p-2 sm:p-3
+        w-full
+        md:sticky md:top-4
+        `,
+        className
+      )}
     >
-      <div
-        className="flex flex-col gap-1"
-      >
-        <span
-          className="text-xl"
-        >
-          Total:
+
+      <div className="flex flex-col gap-1 mb-4">
+        <span className="text-base sm:text-xl">
+          Усього:
         </span>
-        {
-          loading
-            ? (
-              <Skeleton
-                className="h-11 w-48"
-              />
-            )
-            : (
-              <span
-                className="h-11 text-4xl font-extrabold"
-              >
-                <Currency>
-                  {totalPrice}
-                </Currency>
-              </span>
-            )
-        }
+
+        {loading ? (
+          <Skeleton className="h-10 w-40 sm:h-11 sm:w-48" />
+        ) : (
+          <span className="text-2xl sm:text-4xl font-extrabold leading-tight">
+            <Currency>{totalPrice}</Currency>
+          </span>
+        )}
       </div>
 
-      <CheckoutItemsDetails
-        icon={Package}
-        title="Cost of goods"
-        value={totalAmount}
-        loading={loading}
-      />
-      <CheckoutItemsDetails
-        icon={Percent}
-        title="Taxes"
-        value={vatPrice}
-        loading={loading}
-      />
-      <CheckoutItemsDetails
-        icon={Truck}
-        title="Delivery"
-        value={DELIVERY_PRICE}
-        loading={loading}
-      />
+      <div className="flex flex-col gap-1 sm:gap-2">
+        <CheckoutItemsDetails
+          icon={Package}
+          title="Собівартість"
+          value={totalAmount}
+          loading={loading}
+        />
+        <CheckoutItemsDetails
+          icon={Percent}
+          title="Податки"
+          value={vatPrice}
+          loading={loading}
+        />
+        <CheckoutItemsDetails
+          icon={Truck}
+          title="Доставка"
+          value={DELIVERY_PRICE}
+          loading={loading}
+        />
+      </div>
 
       <Button
         type="submit"
         loading={loading}
-        className="w-full h-14 rounded-2xl mt-6 text-base font-bold"
+        className="
+          w-full
+          h-12 sm:h-14
+          rounded-xl sm:rounded-2xl
+          mt-6
+          text-sm sm:text-base
+          font-bold
+        "
       >
-        Proceed to payment
+        Перейти до оплати
       </Button>
-    </WhiteBlock >
+    </WhiteBlock>
   )
 }
 

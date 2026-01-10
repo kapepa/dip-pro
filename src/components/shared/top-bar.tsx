@@ -7,12 +7,13 @@ import { Category } from "@prisma/client";
 import { FilterMobileSlider } from "./filter-mobile-slider";
 
 interface TopBarProps {
+  max: number,
   className?: string
   categories: Category[]
 }
 
 const TopBar: FC<TopBarProps> = (props) => {
-  const { categories, className } = props;
+  const { max, categories, className } = props;
 
   return (
     <div
@@ -33,6 +34,7 @@ const TopBar: FC<TopBarProps> = (props) => {
         />
       </Container>
       <FilterMobileSlider
+        max={max}
         className="absolute top-[100%] block md:hidden"
       />
     </div>
