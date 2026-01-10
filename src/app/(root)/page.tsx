@@ -28,6 +28,7 @@ export default async function Home(props: HomeProps) {
         </Title>
       </Container>
       <TopBar
+        max={max}
         categories={categories}
       />
       <Container

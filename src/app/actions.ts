@@ -7,7 +7,6 @@ import { FormProfileValues, FormRegisterValues } from "@/components/shared/modal
 import { getUserSession } from "@/lib/get-user-session";
 import prisma from "@/lib/prisma";
 import { sendEmail } from "@/lib/send-email";
-import { User } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
 
@@ -15,13 +14,13 @@ import { cookies } from "next/headers";
 export async function createOrder(data: CheckoutFormType) {
   try {
     // This code must be removed after testing.
-    const user = await prisma.user.findUnique({
+    await prisma.user.findUnique({
       where: { email: "alice@prisma.io" },
       include: {
         cart: true,
       }
     });
-    const token = user!.cart!.token
+
 
     const cookieStore = await cookies();
     const cartToken = cookieStore.get("cartToken")?.value;

@@ -1,6 +1,6 @@
 import { Header } from "@/components/shared/header";
 import { Metadata } from "next";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, Suspense } from "react";
 
 interface RootLayoutProps {
   modal: ReactNode,
@@ -19,7 +19,11 @@ const RootLayout: FC<RootLayoutProps> = (props) => {
     <main
       className="min-h-screen"
     >
-      <Header />
+      <Suspense
+        fallback={<div>Loading...</div>}
+      >
+        <Header />
+      </Suspense>
       {modal}
       {children}
     </main>

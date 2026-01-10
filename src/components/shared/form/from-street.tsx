@@ -23,6 +23,7 @@ const FromStreet: FC<FromStreetProps> = (props) => {
     trigger
   } = useFormContext();
 
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -75,11 +76,13 @@ const FromStreet: FC<FromStreetProps> = (props) => {
 
       // Filter and process results for Odessa
       const odessaStreets = data
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((item: any) =>
           item.display_name.toLowerCase().includes('одеса') ||
           item.display_name.toLowerCase().includes('odesa') ||
           (item.address && (item.address.city === 'Одеса' || item.address.town === 'Одеса'))
         )
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
         .map((item: any) => ({
           ...item,
           clean_name: extractOdessaStreet(item.display_name)
@@ -112,6 +115,7 @@ const FromStreet: FC<FromStreetProps> = (props) => {
     };
   }, [fieldValue]);
 
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSuggestionClick = (suggestion: any) => {
     setValue(name, suggestion.clean_name, {
       shouldValidate: true,
