@@ -7,6 +7,7 @@ import { Title } from "@/components/shared/title";
 import { FormInput } from "@/components/shared/form/form-input";
 import { Button } from "@/components/ui/button";
 import { registerUser } from "@/app/actions";
+import { FormPhone } from "@/components/shared/form/form-phone";
 
 interface RegisterFormProps {
   onClose?: VoidFunction
@@ -91,6 +92,15 @@ const RegisterForm: FC<RegisterFormProps> = (props) => {
         <FormInput
           name="email"
           label="E-Mail"
+          required
+          className={`
+            text-sm xs:text-base
+          `}
+        />
+
+        <FormPhone
+          name="phone"
+          label="Tелефон"
           required
           className={`
             text-sm xs:text-base

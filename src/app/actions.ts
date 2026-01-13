@@ -1,15 +1,14 @@
 'use server'
 
 import { CheckoutFormType } from "@/components/shared/checkout/schemas/checkout-schema";
-import { PayOrder } from "@/components/shared/email-template/pay-order";
-import { VerificationUser } from "@/components/shared/email-template/verification-user";
 import { FormProfileValues, FormRegisterValues } from "@/components/shared/modals/auth/forms/schemas";
 import { getUserSession } from "@/lib/get-user-session";
 import prisma from "@/lib/prisma";
-import { sendEmail } from "@/lib/send-email";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
-
+// import { sendEmail } from "@/lib/send-email";
+// import { PayOrder } from "@/components/shared/email-template/pay-order";
+// import { VerificationUser } from "@/components/shared/email-template/verification-user";
 
 export async function createOrder(data: CheckoutFormType) {
   try {
@@ -49,7 +48,8 @@ export async function createOrder(data: CheckoutFormType) {
     if (!userCart) throw new Error("Cart not found");
     if (userCart.totalAmount === 0) throw new Error("Cart is empty");
 
-    const newOrder = await prisma.order.create({
+    // const newOrder = 
+    await prisma.order.create({
       data: {
         fullName: data.fullName,
         email: data.email,
@@ -77,15 +77,15 @@ export async function createOrder(data: CheckoutFormType) {
       }
     })
 
-    await sendEmail({
-      email: process.env.TEST_EMAIL_RESEND!,
-      subject: "Підтвердження замовлення",
-      component: PayOrder,
-      props: {
-        id: newOrder.id,
-        totalAmount: newOrder.totalAmount
-      }
-    })
+    // await sendEmail({
+    //   email: process.env.TEST_EMAIL_RESEND!,
+    //   subject: "Підтвердження замовлення",
+    //   component: PayOrder,
+    //   props: {
+    //     id: newOrder.id,
+    //     totalAmount: newOrder.totalAmount
+    //   }
+    // })
 
   } catch (err) {
     console.log(err)
@@ -133,29 +133,40 @@ export async function registerUser(data: FormRegisterValues) {
       throw new Error("Користувач вже існує")
     }
 
-    const createUser = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email: data.email,
         fullName: data.fullName,
-        password: hashSync(data.password, 12)
+        password: hashSync(data.password, 12),
+        phone: data.phone,
+        verified: true,
       }
     });
 
-    const code = Math.floor(100000 + Math.random() * 90000).toString();
-    await prisma.verificationCode.create({
-      data: {
-        code,
-        userId: createUser.id
-      }
-    })
+    // const code = Math.floor(100000 + Math.random() * 90000).toString();
+    // await prisma.verificationCode.create({
+    //   data: {
+    //     code,
+    //     userId: createUser.id
+    //   }
+    // })
 
-    await sendEmail({
-      email: process.env.TEST_EMAIL_RESEND!,
-      subject: "Підтвердження реєстрації",
-      component: VerificationUser,
-      props: { code }
-    })
+    // await sendEmail({
+    //   email: process.env.TEST_EMAIL_RESEND!,
+    //   subject: "Підтвердження реєстрації",
+    //   component: VerificationUser,
+    //   props: { code }
+    // })
 
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
+}
+
+export async function deleteUser(id: string) {
+  try {
+    await prisma.user.delete({ where: { id } })
   } catch (err) {
     console.log(err)
     throw err

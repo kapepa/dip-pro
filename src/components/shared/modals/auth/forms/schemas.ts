@@ -14,7 +14,13 @@ export const formRegisterSchema = formLoginSchema.extend({
     .min(1, "Необхідно підтвердити пароль"),
   fullName: z.string()
     .min(1, "Необхідно ввести повне ім'я")
-    .min(2, "Ім'я має містити щонайменше 2 символи")
+    .min(2, "Ім'я має містити щонайменше 2 символи"),
+  phone: z.string()
+    .min(1, { message: "Необхідно ввести номер телефону" })
+    .transform((val) => val.replace(/\D/g, ''))
+    .refine((val) => val.length === 12 && val.startsWith('380'), {
+      message: "Введіть коректний український номер телефону"
+    }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Паролі не співпадають",
   path: ["confirmPassword"]
