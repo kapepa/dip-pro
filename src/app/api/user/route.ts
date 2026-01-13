@@ -3,16 +3,16 @@ import { User } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from 'bcrypt';
 
-type CreateUserRequest = Pick<User, "email" | "fullName" | "password">
+type CreateUserRequest = Pick<User, "email" | "fullName" | "password" | "phone">
 
 export async function POST(req: NextRequest) {
   try {
     const body: CreateUserRequest = await req.json(); // how describe type script ! what i reques type?
-    const { email, fullName, password } = body;
+    const { email, fullName, password, phone } = body;
 
-    if (!email || !fullName || !password) {
+    if (!email || !fullName || !password || !phone) {
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: "Відсутні обов'язкові поля" },
         { status: 400 }
       );
     }
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     if (!!existEmail) {
       return NextResponse.json(
-        { error: "This email address is already in use." },
+        { error: "Ця адреса електронної пошти вже використовується." },
         { status: 403 }
       );
     }
@@ -32,7 +32,9 @@ export async function POST(req: NextRequest) {
       data: {
         email,
         fullName,
+        phone,
         password: hashedPassword,
+        verified: true,
       }
     });
 

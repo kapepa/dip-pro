@@ -6,6 +6,7 @@ export const _users: Prisma.UserCreateInput[] = [
     fullName: "Alice",
     email: "alice@prisma.io",
     password: hashSync("123456", 12),
+    phone: "38063147789",
     verified: true,
     role: "USER"
   },
@@ -13,6 +14,7 @@ export const _users: Prisma.UserCreateInput[] = [
     fullName: "Bob",
     email: "bob@prisma.io",
     password: hashSync("123456", 12),
+    phone: "38063157789",
     verified: true,
     role: "ADMIN"
   }]

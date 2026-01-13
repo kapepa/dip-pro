@@ -29,6 +29,7 @@ const FormPhone: FC<FormPhoneProps> = (props) => {
   const {
     formState: { errors },
     setValue,
+    getValues,
     watch,
     trigger
   } = useFormContext();
