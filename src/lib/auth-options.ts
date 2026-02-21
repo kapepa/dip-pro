@@ -25,16 +25,25 @@ export const authOptions: AuthOptions = {
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_ID!,
+      clientSecret: process.env.GOOGLE_SECRET!,
       async profile(profile) {
-        const { id, name, email } = profile;
+        const { id, name, email, picture } = profile;
+        console.log("GoogleProvider", profile)
+
         const getUser = await getUserAuthOptions({ id, name, email })
 
+        console.log("GoogleProvider", {
+          id: getUser.id,
+          fullName: getUser.fullName,
+          image: picture,
+          role: getUser.role,
+          email: getUser.email
+        })
         return {
           id: getUser.id,
           fullName: getUser.fullName,
-          image: profile.avatar_url,
+          image: picture,
           role: getUser.role,
           email: getUser.email
         }
@@ -65,9 +74,19 @@ export const authOptions: AuthOptions = {
   session: {
     strategy: "jwt"
   },
+  pages: {
+    signIn: "/",
+    error: "/auth/error"
+  },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    },
     async signIn({ user, account }) {
       try {
+        console.log("signIn: ", user)
         if (account?.provider === "credentials") return true;
         if (!user.email) return false;
 

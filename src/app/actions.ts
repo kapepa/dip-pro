@@ -9,26 +9,43 @@ import { cookies } from "next/headers";
 // import { sendEmail } from "@/lib/send-email";
 // import { PayOrder } from "@/components/shared/email-template/pay-order";
 // import { VerificationUser } from "@/components/shared/email-template/verification-user";
+import { Prisma } from "@prisma/client";
+
+type UserWithCart = Prisma.UserGetPayload<{
+  include: { cart: true }
+}>;
 
 export async function createOrder(data: CheckoutFormType) {
   try {
-    // This code must be removed after testing.
-    await prisma.user.findUnique({
-      where: { email: "alice@prisma.io" },
-      include: {
-        cart: true,
-      }
-    });
-
-
+    let token: string;
     const cookieStore = await cookies();
     const cartToken = cookieStore.get("cartToken")?.value;
 
-    if (!cartToken) throw new Error("Cart token not found");
+    if (cartToken) {
+      token = cartToken;
+    } else {
+      const { email, phone } = data
+
+      const existUser = await prisma.user.findFirst({
+        where: {
+          OR: [{ email }, { phone }]
+        },
+        include: {
+          cart: true,
+        }
+      }) as UserWithCart | null;
+
+      if (!existUser) throw new Error("User not found");
+      if (!existUser.cart) throw new Error("User cart not found");
+
+      token = existUser.cart.token;
+    }
+
+    if (!token) throw new Error("Cart token not found");
 
     const userCart = await prisma.cart.findFirst({
       where: {
-        token: cartToken,
+        token
       },
       include: {
         user: true,
@@ -43,7 +60,7 @@ export async function createOrder(data: CheckoutFormType) {
           }
         }
       }
-    })
+    });
 
     if (!userCart) throw new Error("Cart not found");
     if (userCart.totalAmount === 0) throw new Error("Cart is empty");
@@ -57,10 +74,11 @@ export async function createOrder(data: CheckoutFormType) {
         address: data.address,
         comment: data.comment,
         totalAmount: userCart.totalAmount,
-        token: cartToken,
-        items: JSON.stringify(userCart.cartItem)
+        token,
+        items: JSON.stringify(userCart.cartItem),
+        status: "PENDING", // Додаємо статус
       }
-    })
+    });
 
     await prisma.cart.update({
       where: {
@@ -69,13 +87,13 @@ export async function createOrder(data: CheckoutFormType) {
       data: {
         totalAmount: 0
       }
-    })
+    });
 
     await prisma.cartItem.deleteMany({
       where: {
         cartId: userCart.id
       }
-    })
+    });
 
     // await sendEmail({
     //   email: process.env.TEST_EMAIL_RESEND!,
@@ -85,61 +103,77 @@ export async function createOrder(data: CheckoutFormType) {
     //     id: newOrder.id,
     //     totalAmount: newOrder.totalAmount
     //   }
-    // })
+    // });
 
   } catch (err) {
-    console.log(err)
+    console.log(err);
+    throw err;
   }
 }
 
 export async function updateUserInfo(data: FormProfileValues) {
   try {
     const currentUser = await getUserSession();
-    if (!(currentUser && currentUser!.email)) throw new Error("User not found");
+    if (!currentUser?.email) throw new Error("User not found");
 
     const profile = await prisma.user.findFirst({
       where: {
         email: currentUser.email
       }
-    })
+    });
+
+    if (!profile) throw new Error("Profile not found");
 
     await prisma.user.update({
       where: {
-        id: profile?.id
+        id: profile.id
       },
       data: {
         fullName: data.fullName,
         email: data.email,
-        password: data.password ? hashSync(data.password, 12) : profile?.password,
+        phone: data.phone,
+        password: data.password ? hashSync(data.password, 12) : profile.password,
       }
-    })
+    });
 
   } catch (err) {
-    console.log(err)
-    throw err
+    console.log(err);
+    throw err;
   }
 }
 
 export async function registerUser(data: FormRegisterValues) {
   try {
-    const user = await prisma.user.findFirst({
+    const existingUser = await prisma.user.findFirst({
       where: {
-        email: data.email,
+        OR: [
+          { email: data.email },
+          { phone: data.phone }
+        ]
       }
-    })
+    });
 
-    if (!!user) {
-      if (!user.verified) throw new Error("Пошта не підтверджена")
-      throw new Error("Користувач вже існує")
+    if (existingUser) {
+      if (!existingUser.verified) throw new Error("Пошта не підтверджена");
+      throw new Error("Користувач вже існує");
     }
 
-    await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         email: data.email,
         fullName: data.fullName,
         password: hashSync(data.password, 12),
         phone: data.phone,
         verified: true,
+        role: "USER",
+      }
+    });
+
+    await prisma.cart.create({
+      data: {
+        userId: newUser.id,
+        token: crypto.randomUUID(),
+        totalAmount: 0,
       }
     });
 
@@ -147,28 +181,55 @@ export async function registerUser(data: FormRegisterValues) {
     // await prisma.verificationCode.create({
     //   data: {
     //     code,
-    //     userId: createUser.id
+    //     userId: newUser.id
     //   }
-    // })
+    // });
 
     // await sendEmail({
     //   email: process.env.TEST_EMAIL_RESEND!,
     //   subject: "Підтвердження реєстрації",
     //   component: VerificationUser,
     //   props: { code }
-    // })
+    // });
 
   } catch (err) {
-    console.log(err)
-    throw err
+    console.log(err);
+    throw err;
   }
 }
 
 export async function deleteUser(id: string) {
   try {
-    await prisma.user.delete({ where: { id } })
+    // Видаляємо пов'язані записи в транзакції
+    await prisma.$transaction([
+      prisma.cartItem.deleteMany({
+        where: {
+          cart: {
+            userId: id
+          }
+        }
+      }),
+      prisma.cart.deleteMany({
+        where: {
+          userId: id
+        }
+      }),
+      prisma.verificationCode.deleteMany({
+        where: {
+          userId: id
+        }
+      }),
+      prisma.order.deleteMany({
+        where: {
+          userId: id
+        }
+      }),
+      prisma.user.delete({
+        where: { id }
+      })
+    ]);
   } catch (err) {
-    console.log(err)
-    throw err
+    console.log(err);
+    throw err;
   }
 }

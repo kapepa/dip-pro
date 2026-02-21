@@ -29,7 +29,6 @@ export function useConfirm(): UseConfirmReturn {
   const handlerSuccess = useCallback(() => {
     startTransition(() => {
       try {
-        console.log(callback)
         if (callback) callback();
       } finally {
         handlerClose();

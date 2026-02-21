@@ -13,7 +13,8 @@ const getUserAuthOptions = async (props: { email: string, name: string, id: stri
     data: {
       email,
       fullName: name || id,
-      password: hashSync(id.toString(), 12),
+      password: hashSync(email.toString(), 12),
+      phone: "",
       verified: true,
     }
   })

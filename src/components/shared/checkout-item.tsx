@@ -40,7 +40,7 @@ export const CheckoutItem: React.FC<Props> = ({
         <CartItemDetails.Info name={name} details={details} />
       </div>
 
-      <div className="text-left md:text-center md:w-[80px]">
+      <div className="text-left md:text-center md:w-[80px] mr-1.5">
         <CartItemDetails.Price value={price} />
       </div>
 

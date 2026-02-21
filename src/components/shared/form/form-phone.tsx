@@ -29,7 +29,6 @@ const FormPhone: FC<FormPhoneProps> = (props) => {
   const {
     formState: { errors },
     setValue,
-    getValues,
     watch,
     trigger
   } = useFormContext();
@@ -70,6 +69,7 @@ const FormPhone: FC<FormPhoneProps> = (props) => {
           unmask={true}
           onAccept={handleAccept}
           placeholder="+38 (0__) ___-__-__"
+          value={fieldValue ?? ""}
           {...otherProps}
         />
         {fieldValue && (

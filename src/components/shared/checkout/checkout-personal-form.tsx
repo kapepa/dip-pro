@@ -28,6 +28,7 @@ const CheckoutPersonalForm: FC<CheckoutPersonalFormProps> = (props) => {
       >
         <FormInput
           name="fullName"
+          label="Ім'я"
           type="text"
           className="text-base"
           placeholder="Ім'я"
@@ -35,6 +36,7 @@ const CheckoutPersonalForm: FC<CheckoutPersonalFormProps> = (props) => {
 
         <FormInput
           name="email"
+          label="Електронна пошта"
           type="email"
           className="text-base"
           placeholder="E-mail"
@@ -42,9 +44,10 @@ const CheckoutPersonalForm: FC<CheckoutPersonalFormProps> = (props) => {
 
         <FormPhone
           name="phone"
-          type="text"
-          className="text-base md:col-span-2"
-          placeholder="Телефон"
+          label="Телефон"
+          type="tel"
+          required
+          placeholder="+38 (0__) ___-__-__"
         />
       </div>
     </WhiteBlock>

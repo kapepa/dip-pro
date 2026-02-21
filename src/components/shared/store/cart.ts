@@ -23,7 +23,6 @@ export const useCartStore = create<CartStateProps>((set) => ({
     try {
       set({ loading: true, error: false });
       const data = await fetchCart();
-      console.log()
       set(getCartDetails(data))
     } catch (err) {
       set({ error: true })

@@ -16,12 +16,6 @@ interface ConfirmModalProps {
 const ConfirmModal: FC<ConfirmModalProps> = (props) => {
   const { open, title, onClose, onSuccess, subtitle, isLoading } = props;
 
-  const handleSuccess = () => {
-    if (!isLoading) {
-      onSuccess();
-    }
-  };
-
   const handleClose = () => {
     if (!isLoading) {
       onClose();

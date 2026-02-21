@@ -1,11 +1,11 @@
 import z from "zod";
 
 export const CheckoutSchema = z.object({
-  email: z.email("Please enter a valid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 characters"),
-  address: z.string().min(5, "Address must be at least 5 characters"),
+  email: z.string().email("Будь ласка, введіть дійсну email адресу"),
+  phone: z.string().min(10, "Номер телефону має містити щонайменше 10 символів"),
+  address: z.string().min(5, "Адреса має містити щонайменше 5 символів"),
   comment: z.string().optional(),
-  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  fullName: z.string().min(2, "Повне ім'я має містити щонайменше 2 символи"),
 })
 
 export type CheckoutFormType = z.infer<typeof CheckoutSchema>;

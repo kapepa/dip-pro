@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { User } from "@prisma/client";
-import { FC, useTransition } from "react";
+import { FC } from "react";
 import { formProfileSchema, FormProfileValues } from "./modals/auth/forms/schemas";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";

@@ -3,18 +3,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { findOrCreateCart } from "@/lib/find-or-create-cart";
 import { CreateCartItemValues } from "@/components/shared/services/dto/cart.dto";
 import { updateCartTotalAmount } from "@/lib/update-cart-total-amount";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-options";
 
 export async function GET(req: NextRequest) {
   try {
-    // This code must be removed after testing.
-    const user = await prisma.user.findUnique({
-      where: { email: "alice@prisma.io" },
-      include: {
-        cart: true,
-      }
-    });
+    let token = req.cookies.get("cartToken")?.value;
 
-    const token = user?.cart?.token ?? req.cookies.get("cartToken")?.value;
+    if (!token) {
+      const session = await getServerSession(authOptions);
+      const sessionUser = session?.user
+
+      if (sessionUser) {
+        const userEmail = sessionUser.email;
+        if (!userEmail) return NextResponse.json({ message: "User email not found" }, { status: 400 });
+
+        const user = await prisma.user.findUnique({
+          where: { email: userEmail },
+          include: {
+            cart: true,
+          }
+        });
+
+        token = user?.cart?.token
+      }
+    }
 
     if (!token) return NextResponse.json({ cartItem: [], totalAmount: 0 })
 
@@ -51,17 +64,43 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    // This code must be removed after testing.
-    const user = await prisma.user.findUnique({
-      where: { email: "alice@prisma.io" },
-      include: {
-        cart: true,
-      }
-    });
+    let userCart;
+    const session = await getServerSession(authOptions);
+    const sessionUser = session?.user
 
-    const data = (await req.json()) as CreateCartItemValues
-    const token = req.cookies.get("cartToken")?.value;
-    const userCart = user?.cart ?? await findOrCreateCart(token);
+    if (sessionUser) {
+      const userEmail = sessionUser.email;
+      if (!userEmail) return NextResponse.json({ message: "User email not found" }, { status: 400 });
+
+      const user = await prisma.user.findUnique({
+        where: { email: userEmail },
+        include: {
+          cart: true,
+        }
+      });
+
+      if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
+
+      if (!user.cart) {
+        userCart = await prisma.cart.create({
+          data: {
+            userId: user.id,
+            token: crypto.randomUUID(),
+            totalAmount: 0,
+          }
+        });
+
+        req.cookies.set("cartToken", userCart.token);
+
+      } else {
+        userCart = user.cart;
+      }
+    } else {
+      const token = req.cookies.get("cartToken")?.value;
+      userCart = await findOrCreateCart(token);
+    }
+
+    const data = (await req.json()) as CreateCartItemValues;
 
     const findCartItem = await prisma.cartItem.findFirst({
       where: {
