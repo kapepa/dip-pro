@@ -40,7 +40,7 @@ export function useConfirm(): UseConfirmReturn {
     setViewText(props)
     setCallback(() => cb);
     setOpenConfirmModal(true);
-  }, [])
+  }, []);
 
   return { ...viewText, isPending, handlerClose, handlerSuccess, handlerOpenModal, openConfirmModal }
 }
