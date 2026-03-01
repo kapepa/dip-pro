@@ -46,12 +46,12 @@ export const CartDrawerItem: React.FC<Props> = ({
 
         <hr className="my-2 xs:my-3 sm:my-3" />
 
-        <div className="flex items-center justify-between flex-wrap gap-2 xs:gap-0">
+        <div className="flex items-center justify-between flex-wrap gap-2 xs:gap-0 sm:flex-col sm:items-center">
           <CountButton
             onClick={onClickCountButton}
             value={quantity}
             size="sm"
-            className="text-xs xs:text-sm"
+            className="text-sm xs:text-base sm:text-center"
           />
 
           <div className="flex items-center gap-2 xs:gap-3">

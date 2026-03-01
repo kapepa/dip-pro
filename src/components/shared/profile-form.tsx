@@ -109,7 +109,7 @@ const ProfileForm: FC<ProfileFormProps> = (props) => {
         <FormProvider {...methods}>
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
-            className="flex flex-col gap-5 w-96 mt-10"
+            className="flex flex-col gap-5 sm:w-96 mt-10"
           >
             <FormInput
               name="email"

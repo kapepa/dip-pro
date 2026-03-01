@@ -43,7 +43,7 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
             <SheetHeader>
               <SheetTitle>
                 <div
-                  className="flex flex-col items-center justify-center w-72 mx-auto"
+                  className="flex flex-col items-center justify-center mx-auto ms:w-72"
                 >
                   <Image
                     src="/assets/images/empty-box.png"
@@ -83,7 +83,9 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
           {totalAmount > 0 &&
             <>
               <SheetHeader>
-                <SheetTitle>
+                <SheetTitle
+                  className="text-base sm:text-lg md:text-xl"
+                >
                   У вашому кошику <span className="font-bold">{cartItems.length}</span> товари.
                 </SheetTitle>
               </SheetHeader>
@@ -129,15 +131,14 @@ const CartDrawer: FC<CartDrawerProps> = (props) => {
                       </Currency>
                     </span>
                   </div>
-
                   <Link href="/checkout">
                     <Button
                       onClick={() => setRedirecting(true)}
                       loading={redirecting}
                       type="submit"
-                      className="w-full h-12 text-base">
+                      className="w-full h-12 text-xs sm:text-sm md:text-base lg:text-lg">
                       Оформити замовлення
-                      <ArrowRight className="w-5 ml-2" />
+                      <ArrowRight className="w-4 sm:w-5 ml-1 sm:ml-2" />
                     </Button>
                   </Link>
                 </div>
