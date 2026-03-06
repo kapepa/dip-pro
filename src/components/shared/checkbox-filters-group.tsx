@@ -35,6 +35,7 @@ const CheckboxFiltersGroup: FC<CheckboxFiltersGroupProps> = (props) => {
     setSearchValue(e.target.value.toLowerCase())
   }
 
+
   if (loading) {
     return (
       <div className={className}>
