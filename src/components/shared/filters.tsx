@@ -137,4 +137,4 @@ const Filters: FC<FiltersProps> = (props) => {
   )
 }
 
-export { Filters }
+export { Filters };
