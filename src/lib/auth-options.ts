@@ -29,17 +29,9 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET!,
       async profile(profile) {
         const { id, name, email, picture } = profile;
-        console.log("GoogleProvider", profile)
 
         const getUser = await getUserAuthOptions({ id, name, email })
 
-        console.log("GoogleProvider", {
-          id: getUser.id,
-          fullName: getUser.fullName,
-          image: picture,
-          role: getUser.role,
-          email: getUser.email
-        })
         return {
           id: getUser.id,
           fullName: getUser.fullName,
