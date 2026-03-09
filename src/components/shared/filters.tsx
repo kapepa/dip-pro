@@ -32,7 +32,7 @@ const Filters: FC<FiltersProps> = (props) => {
 
   return (
     <div
-      className={cn("", className)}
+      className={cn(className)}
     >
       <Title
         size="sm"
@@ -45,7 +45,7 @@ const Filters: FC<FiltersProps> = (props) => {
       </Title>
 
       <div
-        className="flex flex-col gap-3 xs:gap-4 sm:gap-5"
+        className="flex flex-col gap-3 xs:gap-4 sm:gap-5 "
       >
         <CheckboxFiltersGroup
           title="Тип теста"
