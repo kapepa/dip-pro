@@ -14,7 +14,7 @@ interface CheckboxFiltersGroupProps {
   name: string,
   items: Item[],
   limit?: number,
-  selected?: Set<string>
+  selected: Set<string>
   onChange?: (values: string) => void
   className?: string,
   defaultValue?: string[],
@@ -23,7 +23,7 @@ interface CheckboxFiltersGroupProps {
 }
 
 const CheckboxFiltersGroup: FC<CheckboxFiltersGroupProps> = (props) => {
-  const { loading, title, items, limit = 5, onChange, className, searchInputPlaceholder = "Пошук... " } = props;
+  const { loading, title, items, selected, limit = 5, onChange, className, searchInputPlaceholder = "Пошук... " } = props;
   const [showAll, setShowAll] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
 
@@ -34,7 +34,6 @@ const CheckboxFiltersGroup: FC<CheckboxFiltersGroupProps> = (props) => {
   const onChangeSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value.toLowerCase())
   }
-
 
   if (loading) {
     return (
@@ -103,14 +102,18 @@ const CheckboxFiltersGroup: FC<CheckboxFiltersGroupProps> = (props) => {
         )}
       >
         {
-          listItems.map((item, index) => (
-            <FilterCheckbox
-              key={`${item.text}-${index}`}
-              endAdornment={item.endAdornment}
-              onCheckedChange={() => onChange?.(item.value)}
-              {...item}
-            />
-          ))
+          listItems.map((item, index) => {
+            return (
+              <FilterCheckbox
+                key={`${item.text}-${index}-${item.value}`}
+                disabled={loading}
+                isSelected={selected?.has(item.value)}
+                endAdornment={item.endAdornment}
+                onCheckedChange={() => onChange?.(item.value)}
+                {...item}
+              />
+            )
+          })
         }
       </div>
 
