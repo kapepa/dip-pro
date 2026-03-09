@@ -1,33 +1,46 @@
 "use client"
 
 import { cn } from "@/lib/utils";
-import { ComponentPropsWithoutRef, FC, ReactNode } from "react";
+import { ComponentPropsWithoutRef, FC, ReactNode, useState } from "react";
 import { Checkbox } from "../ui/checkbox";
 
 export interface FilterCheckboxProps extends ComponentPropsWithoutRef<typeof Checkbox> {
-  text: string,
-  value: string,
-  endAdornment?: ReactNode,
+  text: string
+  value: string
+  isSelected?: boolean
+  endAdornment?: ReactNode
 }
 
 const FilterCheckbox: FC<FilterCheckboxProps> = (props) => {
-  const { text, endAdornment, ...checkboxProps } = props;
+  const { text, disabled, isSelected, endAdornment, ...checkboxProps } = props
+  const [isChecked, setChecked] = useState<boolean>(Boolean(isSelected))
+
+  const toggle = () => {
+    if (disabled) return;
+    const newValue = !isChecked
+    setChecked(newValue)
+    checkboxProps.onCheckedChange?.(newValue)
+  }
 
   return (
     <div
-      className="flex items-center space-x-2"
+      className="flex items-center space-x-2 cursor-pointer"
+      onClick={toggle}
     >
       <Checkbox
         id={`checkbox-${text}`}
-        className={cn("", checkboxProps.className)}
-        {...checkboxProps}
+        disabled={disabled}
+        className={cn(checkboxProps.className)}
+        checked={isChecked}
       />
+
       <label
         htmlFor={`checkbox-${text}`}
-        className="leading-none cursor-pointer whitespace-nowrap"
+        className="leading-none whitespace-nowrap"
       >
         {text}
       </label>
+
       {endAdornment}
     </div>
   )
