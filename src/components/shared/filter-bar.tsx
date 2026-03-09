@@ -18,7 +18,9 @@ const FilterBar: FC<FilterBarProps> = (props) => {
   return (
     <>
       <aside
-        className={cn(className)}
+        className={cn(
+          className,
+        )}
       >
         <Filters
           max={max}

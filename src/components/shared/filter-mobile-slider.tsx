@@ -45,7 +45,7 @@ const FilterMobileSlider: FC<FilterMobileSliderProps> = (props) => {
       />
       <div
         className={cn(
-          "bg-secondary pt-4 pb-8 w-full px-3 h-0 invisible relative",
+          "bg-secondary pt-4 pb-8 w-full px-3 h-0 invisible fixed top-0 left-0 right-0 overflow-y-scroll",
           open && "h-full visible"
         )}
       >
